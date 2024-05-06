@@ -56,7 +56,34 @@ app.get('/books', (req, res) => {
  * 
  */
 app.post('/books', (req,res)=>{
-    res.send(201).send()
+    res.send(201).send("record posted")
+})
+
+/**
+ * @swagger
+ * /books:
+ *   delete:
+ *     description: Delete item by ID
+ *     response:
+ *       204:
+ *         description: Deleted
+ * 
+ *  
+ * */
+app.delete('/books', (req, res)=>{
+  res.destroy(204)
+})
+/**
+ * @swagger
+ * /books:
+ *   put:
+ *     description: Update Items
+ *     response:
+ *        205:
+ *          description: Updated
+ */
+app.put('/books',(req,res)=>{
+  res.put(205).send()
 })
 
 //listen on localgst 5000
