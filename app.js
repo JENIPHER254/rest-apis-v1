@@ -3,6 +3,7 @@ const express = require("express");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUI = require("swagger-ui-express");
 
+//creating express application called app. This also creates a virtual server
 const app = express();
 //setting up swagger
 const swaggerOptions = {
@@ -20,6 +21,7 @@ console.log(swaggerDocs);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 
+// endpoints
 /**
  * @swagger
  * /books:
@@ -86,5 +88,5 @@ app.put('/books',(req,res)=>{
   res.put(205).send()
 })
 
-//listen on localgst 5000
+//listen on localhst 5000 server
 app.listen(5000, () => console.log("listen on 5000"));
