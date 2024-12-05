@@ -9,9 +9,9 @@ const app = express();
 const swaggerOptions = {
   swaggerDefinition: {
     info: {
-      title: "Library API",
+      title: "YohPal APIs",
       version: "1.0.0",
-    }
+    },
   },
   apis: ["app.js"],
 };
@@ -19,7 +19,6 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 console.log(swaggerDocs);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
-
 
 // endpoints
 /**
@@ -30,16 +29,15 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
  *     responses:
  *        200:
  *          description: Success
- * 
+ *
  */
-app.get('/books', (req, res) => {
+app.get("/books", (req, res) => {
   res.send([
     {
       id: 1,
       title: "Rich Dad Poor Dad",
     },
-    
-  ])
+  ]);
 });
 /**
  * @swagger
@@ -51,15 +49,15 @@ app.get('/books', (req, res) => {
  *       description: Title of the book
  *       in: formData
  *       required: true
- *       type: string   
+ *       type: string
  *     responses:
  *        201:
  *          description: Created
- * 
+ *
  */
-app.post('/books', (req,res)=>{
-    res.send(201).send("record posted")
-})
+app.post("/books", (req, res) => {
+  res.send(201).send("record posted");
+});
 
 /**
  * @swagger
@@ -69,12 +67,12 @@ app.post('/books', (req,res)=>{
  *     response:
  *       204:
  *         description: Deleted
- * 
- *  
+ *
+ *
  * */
-app.delete('/books', (req, res)=>{
-  res.destroy(204)
-})
+app.delete("/books", (req, res) => {
+  res.destroy(204);
+});
 /**
  * @swagger
  * /books:
@@ -84,9 +82,9 @@ app.delete('/books', (req, res)=>{
  *        205:
  *          description: Updated
  */
-app.put('/books',(req,res)=>{
-  res.put(205).send()
-})
+app.put("/books", (req, res) => {
+  res.put(205).send();
+});
 
 //listen on localhst 5000 server
 app.listen(5000, () => console.log("listen on 5000"));
