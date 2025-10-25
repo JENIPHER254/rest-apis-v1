@@ -1,28 +1,37 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const swaggerJsDoc = require("swagger-jsdoc");
-const swaggerUI = require("swagger-ui-express");
+const swaggerUi = require("swagger-ui-express");
+const bookRoutes = require("./routes/books");
 
 const app = express();
 
-// Swagger setup
+// Middleware
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// Swagger Configuration
 const swaggerOptions = {
   swaggerDefinition: {
     info: {
-      title: "Library API",
+      title: "Books API",
+      description: "Temporary In-Memory Book Management API",
       version: "1.0.0",
     },
+    servers: [{ url: "http://localhost:3000" }],
   },
-  apis: ["app.js", "./routes/*.js"], // Include all route files for Swagger
+  apis: ["./routes/*.js"], // path to your API docs
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-// Import routes
-const booksRoutes = require("./routes/books");
+// Routes
+app.use("/books", bookRoutes);
 
-// Use routes
-app.use("/books", booksRoutes);
-
-// Listen on localhost 5000 server
-app.listen(5000, () => console.log("Server running on http://localhost:5000"));
+// Start server
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`📘 Swagger Docs: http://localhost:${PORT}/api-docs`);
+});

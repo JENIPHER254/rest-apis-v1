@@ -1,67 +1,118 @@
 const express = require("express");
 const router = express.Router();
 
+// Temporary in-memory storage
+let books = [{ id: 1, title: "Rich Dad Poor Dad" }];
+
 /**
  * @swagger
  * /books:
  *   get:
- *     description: Get all books
+ *     summary: Get all books
+ *     description: Retrieve a list of all books (stored temporarily in memory).
  *     responses:
- *        200:
- *          description: Success
+ *       200:
+ *         description: Success
  */
 router.get("/", (req, res) => {
-  res.send([
-    {
-      id: 1,
-      title: "Rich Dad Poor Dad",
-    },
-  ]);
+  res.status(200).json(books);
 });
 
 /**
  * @swagger
  * /books:
  *   post:
- *     description: Post a book
+ *     summary: Add a new book
+ *     description: Add a new book to temporary memory storage.
  *     parameters:
- *     - name: title
- *       description: Title of the book
- *       in: formData
- *       required: true
- *       type: string
+ *       - name: title
+ *         in: formData
+ *         description: Title of the book
+ *         required: true
+ *         type: string
  *     responses:
- *        201:
- *          description: Created
+ *       201:
+ *         description: Book created successfully
  */
 router.post("/", (req, res) => {
-  res.status(201).send("Record posted");
+  const { title } = req.body;
+  if (!title) {
+    return res.status(400).json({ message: "Title is required" });
+  }
+
+  const newBook = { id: books.length + 1, title };
+  books.push(newBook);
+  res.status(201).json(newBook);
 });
 
 /**
  * @swagger
- * /books:
+ * /books/{id}:
+ *   put:
+ *     summary: Update a book
+ *     description: Update a book title temporarily by ID.
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         type: integer
+ *         description: ID of the book to update
+ *       - name: title
+ *         in: formData
+ *         description: New title of the book
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Book updated successfully
+ *       404:
+ *         description: Book not found
+ */
+router.put("/:id", (req, res) => {
+  const { id } = req.params;
+  const { title } = req.body;
+  const book = books.find((b) => b.id === parseInt(id));
+
+  if (!book) {
+    return res.status(404).json({ message: "Book not found" });
+  }
+
+  if (!title) {
+    return res.status(400).json({ message: "Title is required" });
+  }
+
+  book.title = title;
+  res.status(200).json(book);
+});
+
+/**
+ * @swagger
+ * /books/{id}:
  *   delete:
- *     description: Delete item by ID
+ *     summary: Delete a book
+ *     description: Delete a book temporarily by ID (in-memory only).
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         type: integer
+ *         description: ID of the book to delete
  *     responses:
  *       204:
- *         description: Deleted
+ *         description: Book deleted successfully
+ *       404:
+ *         description: Book not found
  */
-router.delete("/", (req, res) => {
-  res.status(204).send();
-});
+router.delete("/:id", (req, res) => {
+  const { id } = req.params;
+  const index = books.findIndex((b) => b.id === parseInt(id));
 
-/**
- * @swagger
- * /books:
- *   put:
- *     description: Update items
- *     responses:
- *        205:
- *          description: Updated
- */
-router.put("/", (req, res) => {
-  res.status(205).send();
+  if (index === -1) {
+    return res.status(404).json({ message: "Book not found" });
+  }
+
+  books.splice(index, 1);
+  res.status(204).send();
 });
 
 module.exports = router;
